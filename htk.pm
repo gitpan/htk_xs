@@ -5,7 +5,7 @@ package htk;
 
 use strict;
 use vars qw($VERSION);
-$VERSION='0.02';
+$VERSION='0.03';
 
 ################################################################
 
@@ -44,8 +44,10 @@ sub add {
 	
 	  push @{$this->{"widgets"}}, $widget;
 	  $this->setWidget($widget);
-	
-	  htk_xs::htk_add_widget($this->getHandle(),$widget->getHandle());
+
+	 print $this->getHandle," , ",$widget->getHandle;
+	 htk_xs::htk_add_widget($this->getHandle(),$widget->getHandle());
+	 print " --> ok\n";
     }
 $this;	
 }
@@ -152,6 +154,12 @@ sub Quit {
 	htk_xs::htk_quit();
 }
 
+sub Destroy {
+	my $self=shift;
+
+	htk_xs::htk_widget_destroy($self->getHandle);
+}
+
 
 
 ################################################################
@@ -188,18 +196,58 @@ use vars qw(@ISA);
 sub new {
     my $class=shift;
     my $name=shift;
-	my $windowtype=shift;
+    my $title=shift;
+    my $args = { 'ALLOW_SHRINK' => 1, 'ALLOW_GROW' => 1, 'AUTO_SHRINK' => 1, 'TYPE' => undef, @_ };
+
 	my $this=$class->SUPER::new($name,"htk::Window");
 	
-	$this->{"windowtype"}=$windowtype;
+	$this->{"windowtype"}=$args->{'TYPE'};
 
-	if (not $windowtype) {
-		$windowtype=htk_xs::htk_window_toplevel();
+	if (not $this->{"windowtype"}) {
+		$this->{"windowtype"}=htk_xs::htk_window_toplevel();
 	}
 
-	$this->setHandle(htk_xs::htk_window_new($windowtype));
+	$this->setHandle(htk_xs::htk_window_new($this->{"windowtype"}));
+	$this->setValue($title);
+
+	print $args->{'ALLOW_SHRINK'},",",$args->{'ALLOW_GROW'},",",$args->{'AUTO_SHRINK'},"\n";
+
+        htk_xs::htk_window_set_policy($this->getHandle,
+                                            $args->{'ALLOW_SHRINK'},
+					    $args->{'ALLOW_GROW'},
+					    $args->{'AUTO_SHRINK'}
+				     );
+
 
 $this;	
+}
+
+sub setValue {
+  my $self=shift;
+  my $title=shift;
+  htk_xs::htk_window_set_title($self->getHandle,$title);
+  $self->SUPER::setValue($title);
+}
+
+
+################################################################
+
+package htk::Grid;
+
+use vars qw(@ISA);
+@ISA=qw(htk::Widget);
+
+sub new {
+  my $class=shift;
+  my $name=shift;
+  my $rows=shift;
+  my $cols=shift;
+
+     my $this=$class->SUPER::new($name,"htk::Grid");
+
+     $this->setHandle(htk_xs::htk_grid_new($rows,$cols));
+
+$this;
 }
 
 ################################################################
@@ -207,43 +255,30 @@ $this;
 package htk::Dialog;
 
 use vars qw(@ISA);
-@ISA=qw(htk::Widget);
+@ISA=qw(htk::Window);
 
 sub new {
 	my $class=shift;
 	my $name=shift;
-	my $this=$class->SUPER::new($name,"htk::Dialog");
-	
-	$this->setHandle(htk_xs::htk_dialog_new());
-	
+	my $title=shift;
+	my $rows=shift;
+	my $cols=shift;
+
+        if (not $rows)  { $rows=2; }
+        if (not $cols)  { $cols=2; }
+        if (not $title) { $title="Dialog has no title"; }
+
+	my $this=$class->SUPER::new($name, $title, 'ALLOW_SHRINK' => 0, 'ALLOW_GROW' => 0 );
+	$this->{'dlgGRID'}=new htk::VBox($name.".grid",$rows,$cols);
+	$this->SUPER::add($this->{'dlgGRID'});
+
 $this;	
 }
 
 sub add {
-	my $this=shift;
-	
-	while(my $widget=shift) {
-	  push @{$this->{"widgets"}}, $widget;
-	  $this->setWidget($widget);
-	
-	  htk_xs::htk_dialog_add($this->getHandle(),"vbox",$widget->getHandle());
-    }
-$this;	
-}
-
-sub action {
-	my $this=shift;
-	
-	print "Actionadd!\n";
-	
-	while(my $widget=shift) {
-	
-	  push @{$this->{"widgets"}}, $widget;
-	  $this->setWidget($widget);
-	
-	  htk_xs::htk_dialog_add($this->getHandle(),"action_area",$widget->getHandle());
-    }
-$this;	
+   my $this=shift;
+	$this->{'dlgGRID'}->add(@_);
+$this;
 }
 
 

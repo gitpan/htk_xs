@@ -122,6 +122,13 @@ void htk_widget_show_all(widget)
 	CODE:
 		init();
 		gtk_widget_show_all((GtkWidget *) widget);
+
+void htk_widget_destroy(widget)
+		void *widget;
+	CODE:
+		init();
+		gtk_widget_destroy((GtkWidget *) widget);
+
 				
 
 void htk_add_widget(widget,add)
@@ -166,6 +173,21 @@ void *htk_window_new(type)
         gtk_signal_connect (GTK_OBJECT (RETVAL), "delete_event", GTK_SIGNAL_FUNC (quit), NULL);
 	OUTPUT:
    		RETVAL
+
+void htk_window_set_title(window,label)
+		void *window;
+		char *label;
+	CODE:
+		gtk_window_set_title((GtkWindow *) window,label);
+
+void htk_window_set_policy(window, allow_shrink=1, allow_grow=1,auto_shrink=1 )
+		void *window;
+		int allow_shrink;
+		int allow_grow;
+		int auto_shrink;
+	CODE:
+		gtk_window_set_policy((GtkWindow *) window,allow_shrink,allow_grow,auto_shrink);
+
 
 void htk_quit()
 	CODE:
@@ -340,4 +362,14 @@ void *htk_vbox_new(homogenous=0,spacing=1)
 	OUTPUT:
 		RETVAL
 				
+
+void *htk_grid_new(rows=2,cols=2,homogenous=0)
+		int rows;
+		int cols;
+		int homogenous;
+	CODE:
+		init();
+		RETVAL=(void *) gtk_table_new(rows,cols,homogenous);
+	OUTPUT:
+		RETVAL
 		
