@@ -1,0 +1,52 @@
+
+NAME
+    Log - Loggen van berichten naar de log-server.
+
+DESCRIPTION
+    De log package geeft functies om berichten te sturen naar de log
+    server.
+
+SYNOPSIS
+
+    use log;
+
+    log_info ( $progname, $message )
+       
+	logt $message naar log file $progname met severity LOG_INFO.
+
+    log_warning ( $progname, $message )
+       
+	logt $message naar log file $progname met severity LOG_WARN.
+
+    log_error ( $progname, $message )
+       
+	logt $message naar log file $progname met severity LOG_ERR.
+
+    log_fatal ( $progname, $message )
+       
+	logt $message naar log file $progname met severity LOG_FATAL.
+
+
+AUTHORS
+
+    Hans Dijkema
+
+                            =====================
+
+HOW TO INSTALL IT ?
+
+To install this module, cd to the directory that contains this README
+file and type the following:
+
+    perl Makefile.PL
+    make test
+    make install
+
+To install this module into a specific directory, do:
+perl Makefile.PL PREFIX=/name/of/the/directory
+...the rest is the same...
+
+Please also read the perlmodinstall man page, if available.
+
+Share and Enjoy !!
+

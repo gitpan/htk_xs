@@ -1,0 +1,8 @@
+ChangeLog
+MANIFEST
+README
+htk.pm
+htk_xs.xs
+htk_xs.pm
+test.pl
+Makefile.PL

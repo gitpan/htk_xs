@@ -1,0 +1,5 @@
+23-1-2003: v0.02 
+- UNIX support in Makefile.PL, make difference between Win32 and UNIX
+
+23-1-2003: v0.01
+
